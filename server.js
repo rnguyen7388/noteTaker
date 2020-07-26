@@ -1,9 +1,8 @@
-//Dependecies
 const express = require("express");
 const path = require("path");
 
 const fs = require("fs");
-const notesHTML = "./Develop/db/db.json";
+const notesJSON = "./Develop/db/db.json";
 let notes = [];
 //Sets up Express
 const app = express();
@@ -16,33 +15,47 @@ app.listen(PORT, () => {
 //Sets up Express to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "./Develop/public")));
 
 //link to index file
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "./Develop/public/index.html"));
 });
 //link to notes file
-app.get("/notes", function (req, res) {
+app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "./Develop/public/notes.html"));
 });
 
-app.get("/api/notes", function (req, res) {
-notes = fs.readFileSync("db/db.json", "utf8");
+app.get("/api/notes", (req, res) => {
+notes = fs.readFileSync("/db/db.json", "utf8");
   res.json(notes);
 });
 
-//post
+//add to notes
+app.post("/api/notes", (req, res) => {
+  const noteData = req.body;
+  noteData.id = parseInt(notes.length);
+  fs.readFile(notesJSON, "utf-8", (err, data) => {
+    let allNotes = JSON.parse(data);
+    allNotes.push(noteData);
+    fs.writeFile(notesJSON, JSON.stringify(allNotes), (err) => {
+         if (err) throw err;
+      res.json(allNotes);
+    });
+  });
+});
 
-
-//delete
-app.delete("/api/notes/:id", function (req, res) {
+//delete notes
+app.delete("/api/notes/:id", (req, res) => {
   const deleteId = req.params.id;
   notes = notes.filter((note) => {
     return note.id != deleteId;
   });
-  fs.writeFile(notesHTML, JSON.stringify(notes), (err) => {
+  fs.writeFile(notesJSON, JSON.stringify(notes), (err) => {
     if (err) throw err;
     res.json(notes);
   });
 });
+
+
 
