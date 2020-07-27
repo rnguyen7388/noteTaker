@@ -32,29 +32,19 @@ app.get("/api/notes", (req, res) => {
 
 //add to notes
 app.post("/api/notes", (req, res) => {
-  const noteData = req.body;
-  noteData.id = parseInt(notes.length);
-  fs.readFile(notesJSON, "utf-8", (err, data) => {
-    let allNotes = JSON.parse(data);
-    allNotes.push(noteData);
-    fs.writeFile(notesJSON, JSON.stringify(allNotes), (err) => {
-         if (err) throw err;
-      res.json(allNotes);
-    });
-  });
+ let notesData = req.body;
+  notes.push(notesData);
+  fs.writeFileSync('./Develop/db/db.json', JSON.stringify(notesData), 'utf8');
+  res.json(true);
+  console.log("Note has been added!")
 });
 
 //delete notes
-app.delete("/api/notes/:id", (req, res) => {
-  const deleteId = req.params.id;
-  notes = notes.filter((note) => {
-    return note.id != deleteId;
-  });
+app.delete("/api/notes/:id", function(req, res) {
+  notes.splice(req.params.id, 1);
   fs.writeFile(notesJSON, JSON.stringify(notes), (err) => {
     if (err) throw err;
     res.json(notes);
   });
+  console.log("Note has been deleted!")
 });
-
-
-
