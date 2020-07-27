@@ -5,16 +5,16 @@
 1.[Usage](#Usage)
 
 2.[Contribution](#Contribution)
-  
+
 3.[Questions](#Questions)
 
 Users type in a note and save to add to list
-![](/Develop/public/assets/images/imageAdd.png)
+![](Develop/public/assets/images/imageAdd.PNG)
 
 Users can delete note once it has been added
-![](/Develop/public/assets/images/imageDelete.png)
+![](Develop/public/assets/images/imageDelete.PNG)
 
-## Installation Requirements
+## Istallation Requirements
     npm express
 ## Usage
     Users who need to quickly add notes for reminders 
